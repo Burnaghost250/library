@@ -1,0 +1,124 @@
+{% extends 'books/base.html' %}
+{% load static %}
+
+{% block title %}{{ book.title }}{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f4f6f9;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .book-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 40px;
+    }
+
+    .card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        overflow: hidden;
+        max-width: 350px;
+        width: 100%;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+    }
+
+    .card img {
+        width: 100%;
+        height: 350px;
+        object-fit: cover;
+        border-bottom: 1px solid #eee;
+    }
+
+    .card-body {
+        padding: 20px 25px;
+    }
+
+    .card-title {
+        font-size: 1.4em;
+        font-weight: 600;
+        color: #222;
+        margin-bottom: 10px;
+    }
+
+    .text-muted {
+        color: #666;
+        font-size: 0.95em;
+        margin: 6px 0;
+    }
+
+    .view-link {
+        display: inline-block;
+        margin: 10px 0;
+        text-decoration: none;
+        color: #0d6efd;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+    .view-link:hover {
+        color: #003f99;
+        text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+        .card {
+            max-width: 90%;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="book-wrapper">
+
+        <div class="card">
+            {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
+            {% else %}
+                <img src="https://via.placeholder.com/350x350?text=No+Cover" alt="{{ book.title }}">
+            {% endif %}
+
+            <div class="card-body">
+                <h3 class="card-title">{{ book.title }}</h3>
+                <p class="text-muted"><strong>Author:</strong> {{ book.author }}</p>
+                
+                {% if book.genre.all %}
+                    <p class="text-muted">
+                        <strong>Genre:</strong>
+                        {% for g in book.genre.all %}
+                            {{ g.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+
+                <p class="text-muted"><strong>Available Copies:</strong> {{ book.available_copies }}</p>
+
+                {% if book.pdf_file %}
+                    <a href="{{ book.pdf_file.url }}" class="view-link" target="_blank">📄 View Book</a>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

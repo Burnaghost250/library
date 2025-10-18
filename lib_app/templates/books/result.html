@@ -1,0 +1,80 @@
+{% extends 'books/base.html' %}
+{% block title %}Result{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f2f5f9;
+        margin: 0;
+        padding: 0;
+    }
+
+    .result-container {
+        min-height: 75vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .result-card {
+        background: #fff;
+        border-radius: 15px;
+        padding: 40px 50px;
+        max-width: 480px;
+        text-align: center;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 0.4s ease-in;
+    }
+
+    .result-card h4 {
+        color: #009879;
+        font-weight: 600;
+        font-size: 1.25rem;
+        margin-bottom: 25px;
+    }
+
+    .result-card a {
+        display: inline-block;
+        background-color: #009879;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 20px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .result-card a:hover {
+        background-color: #007f67;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 152, 121, 0.25);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+        .result-card {
+            margin: 20px;
+            padding: 30px;
+        }
+        .result-card h4 {
+            font-size: 1.1rem;
+        }
+    }
+</style>
+
+<div class="result-container">
+    <div class="result-card">
+        <h4>{{ message }}</h4>
+        <a href="{% url 'book_list_view' %}">Back to Books</a>
+    </div>
+</div>
+{% endblock %}
