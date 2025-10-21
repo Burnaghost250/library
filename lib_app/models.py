@@ -55,3 +55,22 @@ class Notice(models.Model):
 
     def __str__(self):
         return self.title
+class Book_request(models.Model):
+    username = models.CharField(max_length=100)
+    email = models.EmailField(max_length=254)
+    book_name = models.CharField(max_length=100)
+    any_message = models.CharField(max_length=100, blank=True, null=True)
+    
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('denied', 'Denied'),
+    ]
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pending'
+    )
+
+    def __str__(self):
+        return f"{self.username} - {self.book_name}"

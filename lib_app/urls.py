@@ -13,17 +13,18 @@ urlpatterns = [
     path('add_notice/', views.add_notice_view, name='add_notice'),
     path('books/', views.book_list_view, name='book_list_view'),
     path('books/<int:pk>/', views.book_detail_view, name='book_detail_view'),
-    path("return/<int:pk>/", views.confirm_return_view, name="confirm_return"),
     path('books/add/', views.add_new_book, name='add_new_book'),
     path('books/<int:pk>/delete/', views.book_delete, name='book_delete'),
     path('students/', views.student_list_view, name='student_list_view'),
     path('students/<int:pk>/', views.student_detail_view, name='student_detail_view'),
-    path('students/add/', views.student_create, name='student_create'),
-    path('students/<int:pk>/edit/', views.student_update, name='student_update'),
-    path('students/<int:pk>/delete/', views.student_delete, name='student_delete'),
     path('students/add_borrow/', views.add_student_and_borrow, name='add_student_and_borrow'),
+    path('return/<int:pk>/', views.return_book, name='return_book'),
     path('search/books/', views.search_book, name='search_book'),
     path('search/students/', views.search_student, name='search_student'),
+    path('book_requested/',views.book_requested,name='book_requested'),
+    path('book_requested/<int:pk>/approve/', views.approve_request, name='approve_request'),
+    path('book_requested/<int:pk>/deny/', views.deny_request, name='deny_request'),
+    path('confirm_return/<int:pk>/', views.confirm_return_view, name='confirm_return'),
     
 ]
 

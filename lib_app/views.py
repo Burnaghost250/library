@@ -6,15 +6,24 @@ from django.db.models import Q
 from datetime import date, datetime
 import re
 from django.utils import timezone
-from .models import Book, Student, Borrower, Notice
+from .models import Book, Student, Borrower, Notice, Book_request
 from django.contrib.auth.models import User
-# ---------- Public / Non-authenticated views ----------
 
 def welcome_page(request):
-    if request.user.is_superuser:
-        return redirect('dash')
+    
     return render(request, 'books/welcome.html')
 def student_book_view(request):
+    if request.method=="POST":
+        username=request.POST['username']
+        email=request.POST['email']
+        book_name=request.POST['book_name']
+        any_message=request.POST['any_message']
+        Book_request.objects.create(
+         username=username,
+         email=email,
+         book_name=book_name,
+         any_message=any_message
+        )
     notices = Notice.objects.all().order_by('-created_at')
     query = request.GET.get('q', '').strip()
 
@@ -33,6 +42,25 @@ def student_book_view(request):
         'query': query,
     }
     return render(request, 'student/non_user.html', context)
+def book_requested(request):
+    all_requests=Book_request.objects.all()
+    context={
+        'all_requests':all_requests,
+    }
+    return render(request,'books/book_request.html',context)
+@login_required
+def approve_request(request, pk):
+    book_req = get_object_or_404(Book_request, pk=pk)
+    book_req.status = 'approved'
+    book_req.save()
+    return redirect('book_requested')
+
+@login_required
+def deny_request(request, pk):
+    book_req = get_object_or_404(Book_request, pk=pk)
+    book_req.status = 'denied'
+    book_req.save()
+    return redirect('book_requested')
 
 
 def page_404(request):
@@ -172,33 +200,22 @@ def student_detail_view(request, pk):
     message = f"Hello {student.name},This is the Hope Haven Secondary School Librarian ,Mr {librarian} i inform you that \n\n you have an overdue book. Please return them as soon as possible or you get fined.\n\nThank you."
     books = Borrower.objects.filter(student=student)
     return render(request, 'books/student_detail.html', {'student': student, 'books': books,'message':message})
-
 @login_required
-def student_create(request):
-    if not request.user.is_superuser:
-        return redirect('index')
-    if request.method == 'POST':
-        form = StudentForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('student_list_view')
-    else:
-        form = StudentForm()
-    return render(request, 'books/form.html', {'form': form})
+def return_book(request, pk):
+    borrowed_book = get_object_or_404(Borrower, pk=pk)
 
-@login_required
-def student_update(request, pk):
-    if not request.user.is_superuser:
-        return redirect('index')
-    student = get_object_or_404(Student, id=pk)
-    if request.method == 'POST':
-        form = StudentForm(request.POST, request.FILES, instance=student)
-        if form.is_valid():
-            form.save()
-            return redirect('student_list_view')
-    else:
-        form = StudentForm(instance=student)
-    return render(request, 'books/form.html', {'form': form})
+    if request.method == "POST":
+        status = request.POST.get("status")
+        borrowed_book.is_returned = True if status == "returned" else False
+        borrowed_book.save()
+
+        if borrowed_book.is_returned:
+            messages.success(request, f'✅ Book "{borrowed_book.book.title}" marked as returned.')
+        else:
+            messages.warning(request, f'⏳ Book "{borrowed_book.book.title}" marked as not returned.')
+
+    return redirect('confirm_return', pk=borrowed_book.student.pk)
+
 
 @login_required
 def add_student_and_borrow(request):
@@ -238,13 +255,7 @@ def add_student_and_borrow(request):
         })
     return render(request, 'books/add_student.html', {'books': books})
 
-@login_required
-def student_delete(request, pk):
-    if not request.user.is_superuser:
-        return redirect('index')
-    student = get_object_or_404(Student, pk=pk)
-    student.delete()
-    return redirect('student_list_view')
+
 
 @login_required
 def confirm_return_view(request, pk):

@@ -1,5 +1,5 @@
 {% extends 'books/base.html' %}
-{% block title %}Add New Book{% endblock %}
+{% block title %}Add Student{% endblock %}
 
 {% block content %}
 <style>
@@ -87,9 +87,14 @@
         outline: none;
     }
 
-    textarea.form-control {
-        resize: vertical;
-        min-height: 90px;
+    .form-text {
+        color: #777;
+        font-size: 0.85em;
+        margin-top: 4px;
+    }
+
+    .text-danger {
+        color: #d93025;
     }
 
     .btn {
@@ -136,48 +141,49 @@
     <a href="{% url 'book_list_view' %}" class="back-link">⬅ Back to Book List</a>
 
     <div class="card">
-        <h3>📘 Add a New Book</h3>
+        <h3>👩‍🎓 Add Student & Borrow Books</h3>
 
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" action="{% url 'add_student_and_borrow' %}">
             {% csrf_token %}
             <div class="row">
+
                 <div class="col-md-6 form-group">
-                    <label class="form-label">Title <span class="text-danger">*</span></label>
-                    <input type="text" name="title" class="form-control" placeholder="Enter book title" required>
+                    <label for="name" class="form-label">Student Name <span class="text-danger">*</span></label>
+                    <input type="text" name="name" id="name" class="form-control" placeholder="Enter student name" required>
                 </div>
 
                 <div class="col-md-6 form-group">
-                    <label class="form-label">Author <span class="text-danger">*</span></label>
-                    <input type="text" name="author" class="form-control" placeholder="Enter author's name" required>
+                    <label for="roll_no" class="form-label">Roll Number <span class="text-danger">*</span></label>
+                    <input type="text" name="roll_no" id="roll_no" class="form-control" placeholder="Enter roll number" required>
+                </div>
+
+                <div class="col-md-6 form-group">
+                    <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                    <input type="email" name="email" id="email" class="form-control" placeholder="Enter student email" required>
+                </div>
+
+                <div class="col-md-6 form-group">
+                    <label for="fine" class="form-label">Fine (if any)</label>
+                    <input type="number" name="fine" id="fine" class="form-control" placeholder="0">
                 </div>
 
                 <div class="col-12 form-group">
-                    <label class="form-label">Summary</label>
-                    <textarea name="summary" class="form-control" placeholder="Write a short description..."></textarea>
+                    <label for="books" class="form-label">Select Books to Borrow</label>
+                    <select name="books" id="books" class="form-select" multiple>
+                        {% for book in books %}
+                            <option value="{{ book.id }}">{{ book.title }} ({{ book.available_copies }} available)</option>
+                        {% endfor %}
+                    </select>
+                    <small class="form-text">Hold Ctrl (Windows) or Cmd (Mac) to select multiple books.</small>
                 </div>
 
-                <div class="col-md-6 form-group">
-                    <label class="form-label">ISBN</label>
-                    <input type="text" name="isbn" class="form-control" placeholder="Enter ISBN number">
-                </div>
-
-                <div class="col-md-6 form-group">
-                    <label class="form-label">Available Copies <span class="text-danger">*</span></label>
-                    <input type="number" name="available_copies" class="form-control" placeholder="e.g. 5" min="1" required>
-                </div>
-
-                <div class="col-md-6 form-group">
-                    <label class="form-label">Book PDF</label>
-                    <input type="file" name="pdf_file" class="form-control" accept="application/pdf">
-                </div>
-
-                <div class="col-md-6 form-group">
-                    <label class="form-label">Cover Image</label>
-                    <input type="file" name="cover_image" class="form-control" accept="image/*">
+                <div class="col-12 form-group">
+                    <label for="return_date" class="form-label">Expected Return Date</label>
+                    <input type="date" name="return_date" id="return_date" class="form-control">
                 </div>
             </div>
 
-            <button type="submit" class="btn">+ Add Book</button>
+            <button type="submit" class="btn">Add Student & Borrow</button>
         </form>
     </div>
 </div>

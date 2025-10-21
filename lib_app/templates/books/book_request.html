@@ -1,0 +1,160 @@
+{% extends 'books/base.html' %}
+{% load static %}
+
+{% block title %}Book Requests{% endblock %}
+
+{% block content %}
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f8f9fa;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+    color: #0d6efd;
+    margin-bottom: 2rem;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+}
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+}
+th {
+    background: #0d6efd;
+    color: white;
+    font-weight: 600;
+}
+tr:nth-child(even) {
+    background: #f2f4f6;
+}
+tr:hover {
+    background: #e9f0ff;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+.action-buttons form {
+    display: inline;
+}
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+button.approved {
+    background: #198754;
+    color: white;
+}
+button.approved:hover {
+    background: #157347;
+}
+button.denied {
+    background: #dc3545;
+    color: white;
+}
+button.denied:hover {
+    background: #bb2d3b;
+}
+
+.back-btn {
+    display: inline-block;
+    margin-bottom: 1rem;
+    background: #343a40;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s ease;
+}
+.back-btn:hover {
+    background: #0d6efd;
+}
+
+.status {
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 4px 8px;
+}
+.status.approved {
+    color: #198754;
+}
+.status.denied {
+    color: #dc3545;
+}
+.status.pending {
+    color: #ffc107;
+}
+</style>
+
+<div class="container">
+    <a href="{% url 'book_list_view' %}" class="back-btn">⬅ Back to Home</a>
+
+     <h1>Welcome <b style="color:green">{{user.username}}</b>, Book request Dashboard</h1>
+
+    <div class="table-wrapper">
+        {% if all_requests %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Requested Book</th>
+                        <th>Message</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in all_requests %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ req.username }}</td>
+                        <td>{{ req.email }}</td>
+                        <td>{{ req.book_name }}</td>
+                        <td>{{ req.any_message|default:"—" }}</td>
+                        <td>
+                            <span class="status {% if req.status == 'approved' %}approved{% elif req.status == 'denied' %}denied{% else %}pending{% endif %}">
+                                {{ req.status|capfirst }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <form method="post" action="{% url 'approve_request' req.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="approved">✅ Brought</button>
+                                </form>
+                                <form method="post" action="{% url 'deny_request' req.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="denied">❌ Not Available</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p style="text-align:center; color:#666;">No book requests yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

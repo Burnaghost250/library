@@ -4,152 +4,172 @@
 
 {% block content %}
 <style>
-    body {
-        font-family: 'Poppins', sans-serif;
-        background-color: #f4f6f9;
-        margin: 0;
-        padding: 0;
+    :root{
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --muted: #6b7280;
+        --accent: #0d6efd;
+        --accent-600: #0b5ed7;
+        --danger: #d93025;
+        --radius: 12px;
+        --shadow: 0 10px 30px rgba(2,6,23,0.08);
+        font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
     }
 
-    .container {
-        width: 100%;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 50px 20px;
+    .login-page{
+        min-height: calc(100vh - 40px);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:24px;
+        background:var(--bg);
     }
 
-    .back-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background-color: #343a40;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 10px 20px;
-        font-weight: 500;
-        text-decoration: none;
-        transition: all 0.3s ease-in-out;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    .login-card{
+        width:100%;
+        max-width:920px;
+        background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.95));
+        border-radius:var(--radius);
+        box-shadow:var(--shadow);
+        overflow:hidden;
+        display:grid;
+        grid-template-columns:1fr;
     }
 
-    .back-btn:hover {
-        background-color: #0d6efd;
-        color: white;
-        transform: translateY(-2px);
+    @media (min-width:900px){
+        .login-card{ grid-template-columns: 420px 1fr; }
     }
 
-    .login-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 70vh;
+    .login-illustration{
+        padding:40px;
+        background: linear-gradient(135deg,#eef2ff 0%, #ffffff 100%);
+        display:flex;
+        flex-direction:column;
+        gap:18px;
+        align-items:flex-start;
+        justify-content:center;
     }
 
-    .card {
-        background: white;
-        border-radius: 12px;
-        padding: 40px 30px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        width: 100%;
-        max-width: 400px;
+    .brand{ display:flex; gap:12px; align-items:center; }
+    .brand h2{ margin:0; font-size:1.2rem; color:#0f172a; }
+    .brand small{ display:block; color:var(--muted); font-size:0.85rem }
+
+    .ill-hero{ width:100%; height:200px; background:transparent; border-radius:8px; display:block }
+
+    .login-form{
+        padding:36px 32px;
+        display:flex;
+        flex-direction:column;
+        gap:18px;
     }
 
-    .card h3 {
-        text-align: center;
-        margin-bottom: 30px;
-        font-size: 1.5em;
-        color: #333;
-    }
+    .login-form h3{ margin:0; font-size:1.25rem; color:#111827 }
+    .lead{ color:var(--muted); font-size:0.95rem }
 
-    .form-group {
-        margin-bottom: 20px;
+    label{ display:block; font-weight:600; margin-bottom:8px; color:#111827 }
+    input[type='text'], input[type='password']{
+        width:100%; padding:12px 14px; border-radius:8px; border:1px solid #e6e9ef; background:#fff; font-size:0.98rem;
     }
+    input:focus{ outline:3px solid rgba(13,110,253,0.12); border-color:var(--accent-600) }
 
-    .form-label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 500;
-        color: #444;
-    }
+    .form-row{ display:flex; gap:12px; align-items:center; }
+    .btn-primary{ display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 16px; background:var(--accent); color:#fff; border-radius:8px; border:none; cursor:pointer; font-weight:700 }
+    .btn-ghost{ background:transparent; border:1px solid #eef2ff; color:var(--accent); padding:10px 14px; border-radius:8px }
 
-    .form-control {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 1em;
-        transition: border-color 0.3s;
-    }
+    .meta{ display:flex; justify-content:space-between; align-items:center; gap:12px }
+    .muted{ color:var(--muted); font-size:0.9rem }
 
-    .form-control:focus {
-        border-color: #0d6efd;
-        outline: none;
-    }
+    .messages{ margin-top:6px }
+    .msg{ padding:10px 12px; border-radius:8px; font-weight:600 }
+    .msg.error{ background:#fff0f0; color:var(--danger); border:1px solid rgba(217,48,37,0.08) }
 
-    .btn {
-        display: block;
-        width: 100%;
-        padding: 12px;
-        background-color: #343a40;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.3s, transform 0.2s;
-    }
+    .back-link{ color:var(--muted); text-decoration:none; font-weight:600 }
+    .back-link:hover{ color:var(--accent) }
 
-    .btn:hover {
-        background-color: #0d6efd;
-        transform: translateY(-2px);
-    }
+    .help-links{ display:flex; gap:12px; align-items:center }
 
-    .alert {
-        margin-top: 15px;
-        padding: 10px;
-        border-radius: 6px;
-        text-align: center;
-        font-weight: 500;
-    }
+    /* small helpers */
+    .sr-only{ position:absolute; left:-10000px; width:1px; height:1px; top:auto; overflow:hidden }
 
-    .alert-error {
-        background-color: #ffe0e0;
-        color: #d93025;
-    }
 </style>
 
-<div class="container">
+<div class="login-page">
+    <div class="login-card" role="main" aria-labelledby="login-heading">
+        <div class="login-illustration" aria-hidden="true">
+            <div class="brand">
+                <svg width="38" height="38" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <rect x="2" y="3" width="20" height="14" rx="2" fill="#0d6efd" />
+                    <path d="M7 10v8" stroke="#fff" stroke-width="1.5" stroke-linecap="round" />
+                    <path d="M17 10v8" stroke="#fff" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+                <div>
+                    <h2>Library Admin</h2>
+                    <small>Manage books, students & circulation</small>
+                </div>
+            </div>
 
-    <div class="mb-4">
-        <a href="{% url 'welcome' %}" class="back-btn">⬅ Back to Home</a>
-    </div>
+            <svg class="ill-hero" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+                <rect width="600" height="400" rx="12" fill="#f8fafc" />
+                <g fill="#c7d2fe" opacity="0.9">
+                    <circle cx="100" cy="120" r="40" />
+                    <rect x="180" y="60" width="220" height="18" rx="9" />
+                    <rect x="180" y="100" width="160" height="18" rx="9" />
+                </g>
+            </svg>
 
-    <div class="login-wrapper">
-        <div class="card">
-            <h3>🔐 Librarian Login</h3>
+            <p class="muted">Quick, secure access for librarians. Keep your credentials private.</p>
+        </div>
 
-            <form method="post">
+        <section class="login-form">
+            <div>
+                <h3 id="login-heading">🔐 Librarian sign in</h3>
+                <p class="lead">Enter your credentials to access the administrator dashboard.</p>
+            </div>
+
+            <div class="messages" aria-live="polite">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="msg error">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+                {% if form and form.non_field_errors %}
+                    {% for err in form.non_field_errors %}
+                        <div class="msg error">{{ err }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <form method="post" novalidate>
                 {% csrf_token %}
-                <div class="form-group">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" name="username" id="username" class="form-control" required>
+                <div>
+                    <label for="id_username">Username</label>
+                    <input type="text" name="username" id="id_username" autocomplete="username" required inputmode="text">
                 </div>
 
-                <div class="form-group">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" name="password" id="password" class="form-control" required>
+                <div>
+                    <label for="id_password">Password</label>
+                    <div style="position:relative;">
+                        <input type="password" name="password" id="id_password" autocomplete="current-password" required>
+                        <button type="button" aria-label="Toggle password visibility" onclick="(function(){var p=document.getElementById('id_password'); if(p.type==='password'){p.type='text'; this.innerText='Hide'}else{p.type='password'; this.innerText='Show'}}).call(this)" style="position:absolute; right:8px; top:8px; background:transparent; border:none; color:var(--muted); font-weight:700; cursor:pointer">Show</button>
+                    </div>
                 </div>
 
-                <button type="submit" class="btn">Login</button>
+                <div class="meta">
+                    <label style="display:flex; align-items:center; gap:8px; font-weight:500; color:var(--muted)"><input type="checkbox" name="remember"> Remember me</label>
+                    <div class="help-links">
+                        <a class="back-link" href="{% url 'welcome' %}">← Back to home</a>
+                        <a class="back-link" href="#">Forgot password?</a>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:6px;">
+                    <button type="submit" class="btn-primary">Sign in</button>
+                    <a class="btn-ghost" href="{% url 'welcome' %}">Cancel</a>
+                </div>
             </form>
 
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-error">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        </div>
+            <p class="muted" style="margin-top:12px; font-size:0.85rem">By signing in you agree to our institution policies.</p>
+        </section>
     </div>
 </div>
 {% endblock %}
